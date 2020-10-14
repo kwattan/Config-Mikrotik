@@ -1,0 +1,18 @@
+/ip firewall filter 
+add chain=forward in-interface=Wan out-interface=Lan dst-address=192.168.0.0/16 action=accept comment="Allow semua akses internet to client" disabled=no
+add chain=input in-interface=Wan protocol=tcp dst-port=8291 action=accept comment="Allow Remote winbox dari Publik" disabled=no
+add chain=input in-interface=Wan protocol=udp src-port=123 action=accept comment="Allow NTP Traffic" disabled=no
+add chain=input in-interface=Wan protocol=udp src-port=53 action=accept comment="Allow DNS Traffic" disabled=no
+add chain=input in-interface=Wan protocol=icmp action=accept comment="Allow Ping Traceroute Traffic" disabled=no  
+add chain=input in-interface=Wan connection-state=new action=add-src-to-address-list address-list=spam address-list-timeout=30m comment="Log Spam IP" disabled=no 
+add chain=input in-interface=Wan action=drop comment="Drop Semua Akses yang tidak di ijinkan" disabled=no
+
+/ip firewall raw
+add chain=prerouting protocol=tcp dst-port=1433-1434,2745,2283,2535,2745,3127-3128,3410 action=drop
+add chain=prerouting protocol=tcp dst-port=137,139,445,593,1024-1030,1080,1214,1363,1364,1368,1373,1377 action=drop
+add chain=prerouting protocol=tcp dst-port=4444,5554,8866,9898,10000,10080,12345,17300,27374,65506 action=drop
+add chain=prerouting protocol=udp dst-port=135-139,445,4444 action=drop
+add chain=prerouting protocol=tcp dst-port=80,21,22,23,443,8728,8729 in-interface=Wan action=drop
+
+
+
